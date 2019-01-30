@@ -1,0 +1,24 @@
+pipeline:
+  run-tests:
+    image: node:6.3.0
+    commands:
+      - cd ./api && npm i --quiet
+      - npm test
+
+  publish-api-docker:
+    image: plugins/docker:1.12
+    username: ${DOCKER_USERNAME}
+    password: ${DOCKER_PASSWORD}
+    email: ${DOCKER_EMAIL}
+    repo: anorsich/ds-api
+    tags:
+      - latest
+    dockerfile: ./api/Dockerfile
+    context: ./api/
+
+  slack-notification:
+    image: plugins/slack
+    webhook: https://hooks.slack.com/services/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
+    username: drone-ci
+    channel: andrew
+    icon_emoji: ":rocket:"
